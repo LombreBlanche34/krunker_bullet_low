@@ -1,6 +1,7 @@
 const defaults = {
     lombre_bullet_low_percentage: 25,
-    lombre_bullet_low_color_crit: "#FF0000"
+    lombre_bullet_low_color_crit: "#FF0000",
+    lombre_bullet_low_status: true,
 }
 
 // Initialize localStorage if values don't exist
@@ -10,6 +11,17 @@ Object.keys(defaults).forEach(key => {
         console.log(`[LombreScripts] [bullet_low.js] ${key} created with default value: ${defaults[key]}`);
     }
 });
+
+// Check if script is enabled
+const scriptStatus = localStorage.getItem('lombre_bullet_low_status');
+const isEnabled = scriptStatus === 'true' || scriptStatus === true;
+
+if (!isEnabled) {
+    console.log("[LombreScripts] [bullet_low.js] Script is disabled (lombre_bullet_low_status = false)");
+    return; // Exit script
+}
+
+console.log("[LombreScripts] [bullet_low.js] Script is enabled");
 
 
 // Load configuration
@@ -28,7 +40,7 @@ function waitForElement(selector, callback) {
     }, 100);
 }
 
-// wait until both elements are visible
+// wait both element to be visible
 Promise.all([
     new Promise(resolve => waitForElement("#ammoVal", resolve)),
     new Promise(resolve => waitForElement("#ammoMax", resolve))
@@ -40,7 +52,7 @@ Promise.all([
 
         if (currentText === "-") return;
 
-        // Extract text and remove the |
+        // extract ammo max and remove |
         const maxValue = parseInt(maxText.replace("|", "").trim(), 10);
         const currentValue = parseInt(currentText, 10);
 
@@ -55,7 +67,7 @@ Promise.all([
         }
     }
 
-    // Observe ammoVal
+    // Obser AmmoVal changement
     const observerVal = new MutationObserver(updateAmmoColor);
     observerVal.observe(ammoElement, {
         childList: true,
@@ -63,7 +75,7 @@ Promise.all([
         subtree: true
     });
 
-    // Observe AmooMax
+    // Observe AmmoMax changement
     const observerMax = new MutationObserver(updateAmmoColor);
     observerMax.observe(ammoMaxElement, {
         childList: true,
@@ -71,7 +83,7 @@ Promise.all([
         subtree: true
     });
 
-    updateAmmoColor(); // check when available
+    updateAmmoColor();
 });
 
 console.log(`[LombreScripts] [bulletLow.js] Configuration loaded`, config);
