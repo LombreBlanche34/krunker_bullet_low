@@ -229,7 +229,7 @@ function createSettingSection(moduleName, params) {
 
     for (const [paramName, paramData] of Object.entries(params)) {
         // skip if its "status" since its on the header
-        if (paramName === 'status') continue;
+        if (paramName === 'status' || paramName === 'version') continue;
 
         const isArray = Array.isArray(paramData.value);
         const isObject = typeof paramData.value === 'object' && !isArray && paramData.value !== null;
